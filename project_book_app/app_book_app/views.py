@@ -38,6 +38,13 @@ def create_user(request):
     return Response(profile_serialized.data)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_books(request):
+    books = Book.objects.filter(profile = Profile.objects.get(id=request.data['user']))
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
