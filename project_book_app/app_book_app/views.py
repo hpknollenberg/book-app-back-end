@@ -9,6 +9,18 @@ from .serializers import *
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_book(request):
+    Book.objects.create(
+        authors = request.data['authors'],
+        title = request.data['title'],
+        image_link = request.data['image_link'],
+        profile = Profile.objects.get(id=request.data['user']),
+    )
+    return Response()
+
+
+@api_view(['POST'])
 @permission_classes([])
 def create_user(request):
     user = User.objects.create(
