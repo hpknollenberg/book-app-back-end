@@ -11,12 +11,13 @@ from .serializers import *
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_book(request):
-    Book.objects.create(
-        authors = request.data['authors'],
-        title = request.data['title'],
-        image_link = request.data['image_link'],
-        profile = Profile.objects.get(id=request.data['user']),
-    )
+    if not Book.objects.filter(authors=request.data['authors'], title=request.data['title']):
+        Book.objects.create(
+            authors = request.data['authors'],
+            title = request.data['title'],
+            image_link = request.data['image_link'],
+            profile = Profile.objects.get(id=request.data['user']),
+        )
     return Response()
 
 
@@ -41,7 +42,7 @@ def create_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_books(request):
-    books = Book.objects.filter(profile = Profile.objects.get(id=request.data['user']))
+    books = Book.objects.filter(profile = Profile.objects.get(id=request.data['user'])).order_by('-id')
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
