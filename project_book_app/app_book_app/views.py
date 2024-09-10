@@ -11,13 +11,24 @@ from .serializers import *
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_book(request):
-    if not Book.objects.filter(authors=request.data['authors'], title=request.data['title']):
-        Book.objects.create(
-            authors = request.data['authors'],
-            title = request.data['title'],
-            image_link = request.data['image_link'],
-            profile = Profile.objects.get(id=request.data['user']),
-        )
+    book = Book.objects.get_or_create(
+        authors = request.data['authors'],
+        title = request.data['title'],
+        image_link = request.data['image_link'],
+    )
+    profile = Profile.objects.get(id=request.data['user'])
+    profile.profile_books.add(book[0])
+    return Response()
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_review(request):
+    Review.objects.create(
+        profile = Profile.objects.get(id=request.data['user']),
+        book = Book.objects.get(id=request.data['book']),
+        content = request.data['content'],
+    )
     return Response()
 
 
@@ -42,7 +53,7 @@ def create_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_books(request):
-    books = Book.objects.filter(profile = Profile.objects.get(id=request.data['user'])).order_by('-id')
+    books = Book.objects.filter(profiles = Profile.objects.get(id=request.data['user'])).order_by('-id')
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
