@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 # Virtual Environment
-bookappenv/
+book-env/
