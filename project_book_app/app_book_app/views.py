@@ -57,6 +57,25 @@ def get_books(request):
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_other_books(request):
+    user = User.objects.get(username=request.data['username'])
+    books = Book.objects.filter(profiles = Profile.objects.get(id=user.id)).order_by('-id')
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_other_profile(request):
+    user = User.objects.get(username=request.data['username'])
+    profile = user.profile
+    serializer = ProfileSerializer(profile, many=False)
+    return Response(serializer.data)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
@@ -64,3 +83,6 @@ def get_profile(request):
     profile = user.profile
     serializer = ProfileSerializer(profile, many=False)
     return Response(serializer.data)
+
+
+        

@@ -29,6 +29,8 @@ urlpatterns = [
     path('create-review/', create_review),
     path('create-user/', create_user),
     path('get-books/', get_books),
+    path('get-other-books/', get_other_books),
+    path('get-other-profile/', get_other_profile),
     path('profile/', get_profile),
     path('token/', TokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view())
