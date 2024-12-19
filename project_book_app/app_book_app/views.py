@@ -18,18 +18,20 @@ def create_book(request):
     )
     profile = Profile.objects.get(id=request.data['user'])
     profile.profile_books.add(book[0])
-    return Response()
+    serializer = BookSerializer(book[0], many=False)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_review(request):
-    Review.objects.create(
+    review = Review.objects.create(
         profile = Profile.objects.get(id=request.data['user']),
         book = Book.objects.get(id=request.data['book']),
         content = request.data['content'],
     )
-    return Response()
+    serializer = ReviewSerializer(review)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
